@@ -1,10 +1,31 @@
 import scrapy
 
-
+# If your spider does not have a strict list of allowed_domains, 
+# there is a chance that one of the links on the inner website 
+# will be connected to an outer website and ur spider will start 
+# crawling and scraping an entire internet
 class BookspiderSpider(scrapy.Spider):
     name = "bookspider"
     allowed_domains = ["books.toscrape.com"]
     start_urls = ["https://books.toscrape.com"]
 
     def parse(self, response):
-        pass
+        books = response.css('article.product_pod')
+
+        # I before E except after C, or when sounded as A like in neighbour or weigh
+        for book in books: 
+            yield {
+                'name' : book.css('h3 a::text').get(),
+                'price' : book.css('.product_price .price_color::text').get(),
+                'url' : book.css('h3 a').attrib['href'],
+            }
+            
+        next_page = response.css('li.next a ::attr(href)').get()
+        
+        if next_page is not None:
+            if 'catalogue/' in next_page:
+                next_page_url = 'https://books.toscrape.com/' + next_page
+            else:
+                next_page_url = 'https://books.toscrape.com/catalogue/' + next_page
+            yield response.follow(next_page_url, callback= self.parse)
+            

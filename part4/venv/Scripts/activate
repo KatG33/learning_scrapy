@@ -1,6 +1,6 @@
 # This file must be used with "source bin/activate" *from bash*
 # You cannot run it directly
-# IF standard Windows Activation command doesnt work, try to change 
+# IF standard Windows Activation command doesn't work, try to change 
 # EXECUTION POLICY: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 deactivate () {
